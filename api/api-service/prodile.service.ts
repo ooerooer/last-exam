@@ -15,8 +15,6 @@ export const UpDate  = async (payload:IUserMe)=>{
   try{
     const response:any = $api.patch("users/me",payload)
     return response
-    
-    return response
   }catch(error){
     console.error(error);
   }

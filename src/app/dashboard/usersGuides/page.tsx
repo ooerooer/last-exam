@@ -1,14 +1,12 @@
-"use client";
-import { IGuides } from "@/app/types/guides.types";
-import React, { useEffect, useState } from "react";
-import { MdEdit } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
-import { deleteGuides, getGuides } from "../../../../api/api-service/guides.service";
+"use client"
 
-const UserGuides = () => {
-    const [open, setOpen] = useState(false);
+import React, { useEffect, useState } from "react";
+import { IGuides } from "@/app/types/guides.types";
+import { getGuides } from "../../../../api/api-service/guides.service";
+
+const Guides = () => {
     const [guides, setGuides] = useState([]);
-    const [editGuides, setEditGuides] = useState<IGuides>()
+    const [searchTerm, setSearchTerm] = useState("");
 
     const GetGuides = async () => {
         const response = await getGuides();
@@ -19,32 +17,38 @@ const UserGuides = () => {
         GetGuides();
     }, []);
 
-    const deletModal = (id: string) => {
-        deleteGuides(id)
-    }
-    const editModal = (item: IGuides) => {
-        setEditGuides(item)
-        setOpen(true)
-    }
+    const filteredGuides = guides.filter((guide: IGuides) =>
+        guide.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <div className="flex ml-[400px]">
-            {guides?.map((item: any) => {
-                return <div className="w-[300px] p-[30px] border rounded-lg">
+        <div className="ml-[400px]">
+            <div className="sticky z-30 top-0">
+                <input
+                    type="text"
+                    placeholder="Search by Title"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="m-2 p-2 border rounded text-black"
+                />
+            </div>
+            <div className="flex">
+                <div>
 
-                    <div className="flex">
-                        <button className="text-[25px] text-[red] active:bg-slate-200 p-[7px] rounded-3xl transition-all" onClick={() => deletModal(item._id)}><MdDelete /></button>
-                        <button className="text-[25px] text-[blue] active:bg-slate-200 p-[7px] rounded-3xl transition-all" onClick={() => editModal(item)}><MdEdit /></button>
+                    <div className="w-[100%] flex flex-wrap justify-center p-[10px] gap-[20px]">
+                        {filteredGuides.map((item: any, index: number) => (
+                            <div key={index} className="w-[300px] p-[15px] rounded-xl border flex flex-col gap-[20px] bg-[#182237] hover:bg-[#192b47]">
+                                <h1 className="text-[25px] text-center">Rule</h1>
+                                <h4>{item.title}: title</h4>
+                                <h4>{item.content}: content</h4>
+                            </div>
+                        ))}
                     </div>
 
-                    <h1 className="text-[25px] text-center">Qonun qoidalar</h1>
-
-                    <h1>{item.title}</h1>
-                    <h1>{item.content}</h1>
                 </div>
-            })}
+            </div>
         </div>
     );
 };
 
-export default UserGuides;
+export default Guides;

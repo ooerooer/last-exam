@@ -35,12 +35,16 @@ const GuidesModal = ({ open, setOpen, editGuides, setEditGuides }: any) => {
 
         if (editGuides) {
             // const data = { payload, _id: updateGuides._id };
-           const response =  await updateGuides({ ...payload, _id: editGuides._id });
+            const response = await updateGuides({ ...payload, _id: editGuides._id });
         } else {
             await addGuides(payload);
         }
         toggle();
     };
+
+    const reflashing = () => {
+        window.location.reload();
+    }
 
     return (
         <div>
@@ -77,8 +81,9 @@ const GuidesModal = ({ open, setOpen, editGuides, setEditGuides }: any) => {
                                     <button
                                         type="submit"
                                         className="p-[5px] bg-slate-800 text-white rounded w-[160px] h-[40px] my-2 ml-[80px]"
+                                        onClick={reflashing}
                                     >
-                                        Enter the modal
+                                        send
                                     </button>
                                 </form>
                             </div>

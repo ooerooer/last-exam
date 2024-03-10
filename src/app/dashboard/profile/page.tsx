@@ -1,33 +1,47 @@
-"use client";
+"use client"
+
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { MdEdit } from "react-icons/md";
 import { IUserMe } from "@/app/types/profile.types";
-import { getUserMe } from "../../../../api/api-service/prodile.service";
+import { getUserMe, updateUserProfile } from "../../../../api/api-service/prodile.service";
 import ModalApp from "./modals/modal";
 
 const SingleAdmin = () => {
   const [userMe, setUserMe] = useState<IUserMe>();
   const [open, setOpen] = useState(false);
+
   const userAdmin = async () => {
     const response = await getUserMe();
     setUserMe(response?.data?.data);
   };
+
   useEffect(() => {
     userAdmin();
   }, []);
+
+  const handleProfileUpdate = async (updatedProfile: Partial<IUserMe>) => {
+    try {
+      const response = await updateUserProfile(updatedProfile);
+      setUserMe(response?.data?.data);
+      setOpen(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
   return (
     <div>
-      <ModalApp setOpen={setOpen} open={open} modalOpen={userMe} />
+      <ModalApp setOpen={setOpen} open={open} user={userMe} handleProfileUpdate={handleProfileUpdate} />
       <div className="">
         <div className="">
           <div className="gap-[50px] border-[white] bg-[#121c35] rounded-xl border-[2px] p-[50px]">
             <div>
               <h1 className="text-[30px] text-center pt-[30px]">Shaxsiy ma'lumot</h1>
               <Image
-                src={
-                  `http://localhost:8080/${userMe?.avatar}` ? `http://localhost:8080/${userMe?.avatar}` : "/userImage.jpg"
-                } width={250} height={250} alt="image" className="w-[200px] h-[200px] m-auto my-[10px]" />
+                src={userMe?.avatar ? `http://localhost:8080/${userMe?.avatar}` : "/userImage.jpg"}
+                width={250} height={250} alt="image" className="w-[200px] h-[200px] m-auto my-[10px]"
+              />
             </div>
 
             <div className="flex justify-around border rounded-lg p-[50px]">
